@@ -6,7 +6,7 @@ import "strings"
 // stringMap takes a string and maps all its characters with there repetition.
 func stringMap(str string) map[rune]int {
 
-	strMap := make(map[rune]int, len(str))
+	strMap := make(map[rune]int)
 
 	for _, char := range str {
 		strMap[char]++
