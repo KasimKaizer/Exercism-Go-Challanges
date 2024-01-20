@@ -1,7 +1,7 @@
-// sieve Package contains solution for the Sieve exercise on Exercism
+// sieve - Package contains solution for the Sieve exercise on Exercism
 package sieve
 
-// Sieve returns a list of all the prime numbers till the given limit.
+// Sieve - returns a list of all the prime numbers till the given limit.
 func Sieve(limit int) []int {
 
 	// return nil as all numbers below 2 are non prime (composite) numbers.
@@ -18,13 +18,16 @@ func Sieve(limit int) []int {
 
 	// we loop over all the numbers in the composite array.
 	for num, isComposite := range composite {
-		// if the current number is not composite.
-		if !isComposite {
-			prime = append(prime, num) // append that number to prime slice.
-			for i := 2; i*num <= limit; i++ {
-				// mark all the multiples of that number in composite array  as composite.
-				composite[i*num] = true
-			}
+
+		// if the current number is composite, continue to next iteration.
+		if isComposite {
+			continue
+		}
+
+		prime = append(prime, num) // append current number to prime slice.
+		for i := 2; i*num <= limit; i++ {
+			// mark all the multiples of current number in composite array  as composite.
+			composite[i*num] = true
 		}
 	}
 
