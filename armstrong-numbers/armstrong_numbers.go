@@ -15,6 +15,7 @@ func IsNumber(n int) bool {
 	return n == sum
 }
 
+// numLength takes a number and returns the number of digits in it.
 func numLength(n int) int {
 	l := 0
 	for n > 0 {
