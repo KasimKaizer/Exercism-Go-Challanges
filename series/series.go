@@ -1,7 +1,7 @@
-// series - package contains solution for the Series Exercise on Exercism
+// Package series contains solution for the Series Exercise on Exercism
 package series
 
-// All - takes a span and a string returns all the contiguous substrings of length span in that string
+// All takes a span and a string returns all the contiguous substrings of length span in that string
 // in the order that they appear.
 func All(n int, s string) []string {
 	strLen := len(s)
@@ -19,17 +19,14 @@ func All(n int, s string) []string {
 	return output
 }
 
-// UnsafeFirst - takes a string and a span and returns the first substring with that span.
+// UnsafeFirst takes a string and a span and returns the first substring with that span.
 // if the string provided is smaller then span, it returns the string.
 func UnsafeFirst(n int, s string) string {
-	if len(s) < n {
-		return s
-	}
-
-	return s[:n]
+	output, _ := First(n, s)
+	return output
 }
 
-// First - similar to UnsafeFirst function takes a string and a span and returns the first substring
+// First similar to UnsafeFirst function takes a string and a span and returns the first substring
 // with that span. if the string provided is smaller then span, it returns the string and `false`.
 func First(n int, s string) (string, bool) {
 	if len(s) < n {

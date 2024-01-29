@@ -1,4 +1,4 @@
-// phonenumber - contains the solution for Phone Number exercise on Exercism.
+// Package phonenumber contains the solution for Phone Number exercise on Exercism.
 package phonenumber
 
 import (
@@ -15,44 +15,32 @@ var (
 	errInvalidNumber = errors.New("the number provided is invalid")
 )
 
-// Number - takes a phone number in any format and cleans it up.
+// Number takes a phone number in any format and cleans it up.
 func Number(phoneNumber string) (string, error) {
-	number := re.FindAllString(phoneNumber, -1) // find all digits in the passed string.
+	number := re.FindAllString(phoneNumber, 12) // find all digits in the passed string.
 	numLen := len(number)
 
-	switch numLen {
-	case 11: // cases for if the number of digits in the passed string is 11
-		if number[0] != "1" {
-			// first digit can't be anything but '1' in american phone system.
-			return "", errInvalidNumber
-		}
-
-		if number[1] == "1" || number[1] == "0" {
-			return "", errInvalidNumber // second digit can't be 0 or 1.
-		}
-
-		if number[4] == "1" || number[4] == "0" {
-			return "", errInvalidNumber // 5th digit can't be 0 or 1.
-		}
-
-		return strings.Join(number[1:], ""), nil
-
-	case 10: // cases for if the number of digits in the passed string is 10
-		if number[0] == "1" || number[0] == "0" {
-			return "", errInvalidNumber // first digit can't be 0 or 1.
-		}
-
-		if number[3] == "1" || number[3] == "0" {
-			return "", errInvalidNumber // 4th digit can't be 0 or 1.
-		}
-		return strings.Join(number, ""), nil
-
+	if numLen > 11 || numLen < 10 {
+		return "", errInvalidNumber // a number can't be above 11 digits or below 10 digits in NANP.
 	}
-	// if number of digits is not 10 or 11 then the number is invalid.
-	return "", errInvalidNumber
+
+	if numLen == 11 {
+		if number[0] != "1" {
+			return "", errInvalidNumber // first digit of a 11 digit number can't be anything but '1' in NANP.
+		}
+		number = number[1:]
+	}
+	if number[0] == "1" || number[0] == "0" {
+		return "", errInvalidNumber // Area Code can't start with 0 or 1 in NANP.
+	}
+
+	if number[3] == "1" || number[3] == "0" {
+		return "", errInvalidNumber // Exchange code can't start with 0 or 1 in NANP.
+	}
+	return strings.Join(number, ""), nil
 }
 
-// AreaCode - takes a phone number in any formate and returns its area code.
+// AreaCode takes a phone number in any formate and returns its area code.
 func AreaCode(phoneNumber string) (string, error) {
 	number, err := Number(phoneNumber)
 	if err != nil {
@@ -61,7 +49,7 @@ func AreaCode(phoneNumber string) (string, error) {
 	return number[:3], nil
 }
 
-// Format - takes an unformatted phone number and formats it.
+// Format takes an unformatted phone number and formats it.
 func Format(phoneNumber string) (string, error) {
 	number, err := Number(phoneNumber)
 	if err != nil {

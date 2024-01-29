@@ -3,12 +3,13 @@ package prime
 
 // Factors - takes a number and returns all of its prime factors.
 func Factors(n int64) []int64 {
-	var output []int64
 
 	// there are no prime numbers less then 2, so return an empty slice.
 	if n < 2 {
-		return output
+		return nil
 	}
+
+	var output []int64
 
 	// as long as the number is devisable by 2, append 2 to the output string.
 	for n%2 == 0 {
