@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-// Numbers is a slice of string that contains english numbers.
-var Numbers = []string{"No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"}
+// numbers is a slice of string that contains english numbers.
+var numbers = []string{"No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"}
 
 // pluralB takes a number and based on that returns singular or plural of bottle.
 func pluralB(i int) string {
@@ -31,7 +31,7 @@ func Recite(startBottles, takeDown int) []string {
 		for j := 0; j < 2; j++ { // as first two lines in a verse are same, we repeat it.
 			output = append(output, fmt.Sprintf(
 				"%s green %s hanging on the wall,",
-				Numbers[i],
+				numbers[i],
 				pluralB(i), // we check if it should be bottle or bottles.
 			))
 		}
@@ -40,7 +40,7 @@ func Recite(startBottles, takeDown int) []string {
 
 		output = append(output, fmt.Sprintf(
 			"There'll be %s green %s hanging on the wall.",
-			strings.ToLower(Numbers[i-1]),
+			strings.ToLower(numbers[i-1]),
 			pluralB(i-1),
 		))
 	}

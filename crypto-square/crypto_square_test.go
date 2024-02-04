@@ -7,7 +7,7 @@ var tests = []struct {
 	expected string // cipher text
 }{
 	{
-		input:    "s#$%^&plunk",
+		input:    "s#$%^&plunk", 
 		expected: "su pn lk",
 	},
 	{
@@ -73,6 +73,10 @@ var tests = []struct {
 	{
 		input:    "123456789a",
 		expected: "159 26a 37  48 ",
+	},
+	{
+		input:    "*&^%$#$%^&^%$#$%^",
+		expected: "",
 	},
 	{
 		input:    "If man was meant to stay on the ground god would have given us roots",

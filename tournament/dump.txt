@@ -1,0 +1,14 @@
+Got:
+Team                           | MP |  W |  D |  L |  P
+Allegoric Alaskians            |  3 |  2 |  1 |  0 |  7
+Courageous Californians        |  3 |  2 |  1 |  0 |  7
+Blithering Badgers             |  3 |  0 |  1 |  2 |  1
+Devastating Donkeys            |  3 |  0 |  1 |  2 |  1
+
+------------------------------------------
+Want:
+Team                           | MP |  W |  D |  L |  P
+Allegoric Alaskians            |  3 |  2 |  1 |  0 |  7
+Courageous Californians        |  3 |  2 |  1 |  0 |  7
+Blithering Badgers             |  3 |  0 |  1 |  2 |  1
+Devastating Donkeys            |  3 |  0 |  1 |  2 |  1

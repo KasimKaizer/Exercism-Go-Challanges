@@ -1,4 +1,4 @@
-// sublist - package contains solution for Sub List exercise on Exercism.
+// Package sublist contains solution for Sub List exercise on Exercism.
 package sublist
 
 // My though process to solve this. I am leaving this in for future me.
@@ -9,7 +9,7 @@ package sublist
 // return based on which string was bigger
 // if lists were unsorted, we would sort them and do this same process.
 
-// Sublist - takes two lists and tells you about the relation between them.
+// Sublist takes two lists and tells you about the relation between them.
 func Sublist(l1, l2 []int) Relation {
 
 	l1Len := len(l1)
@@ -35,18 +35,19 @@ func Sublist(l1, l2 []int) Relation {
 
 }
 
-// subset - takes 2 sets and returns if smallerList is subset of largerList.
+// subset takes 2 sets and returns if smallerList is subset of largerList.
 func subset(largerList, smallerList []int) bool {
 
-	if smallerList == nil {
+	if len(smallerList) == 0 {
 		return true // if smallerList is nil then it is a subset of larger.
 	}
 	largerLen := len(largerList)
 	smallerLen := len(smallerList)
-
-	if smallerLen > largerLen {
-		return false // if largerList is smaller then smallerList, then smallerList can't be a subset.
-	}
+	/*
+		if smallerLen > largerLen {
+			return false // if largerList is smaller then smallerList, then smallerList can't be a subset.
+		}
+	*/
 	// we iterate through all possible subsets in largerList which satisfy the length of smallerList
 	for i := 0; i < (largerLen - smallerLen + 1); i++ {
 		isSubset := true // we assume it is a subset.
