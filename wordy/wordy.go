@@ -2,40 +2,35 @@
 package wordy
 
 import (
-	"regexp"
 	"strconv"
 	"strings"
 )
 
-// re contain regex to match our requirements for a question, its evaluated during compile time.
-var re = regexp.MustCompile(`^(What is) (-?\d+)( (plus|minus|multiplied by|divided by){1} (-?\d+))*( )?(\?$)`)
-
 // r contains phrases we want to remove from our passed question.
-var r = strings.NewReplacer("What is ", "", " by", "", "?", "")
+var r = strings.NewReplacer("What is", "", "by", "", "?", "")
 
 // Answer takes a mathematical question and returns its answer.
 // it returns false for invalid questions.
 func Answer(question string) (int, bool) {
-	if !re.MatchString(question) { // use regex to make sure the question fits our rules.
+
+	// remove phrases we don't need from the question and split by space.
+	sanitized := strings.Fields(r.Replace(question))
+	sanLen := len(sanitized)
+	if sanLen%2 == 0 { // if there are even number of items then the question is invalid.
 		return 0, false
 	}
-	// remove phrases we don't need from the question, this makes it easy to parse.
-	// then split it by space, so we are left with just numbers and operations.
-	sanitized := strings.Split(r.Replace(question), " ")
 	// first item in the slice will always be a number for a valid question.
 	cal, err := strconv.Atoi(sanitized[0])
 	if err != nil {
 		return 0, false
 	}
-	for i := 1; i < len(sanitized)-1; i++ { // iterate from second item to second last item.
-		// see if the item after the current item is a number.
+
+	for i := 1; i < sanLen-1; i = i + 2 { // only loop through operators.
+		// operators must be followed by numbers, if not then its a invalid question.
 		val, err := strconv.Atoi(sanitized[i+1])
 		if err != nil {
-			continue // if not then move on to next iteration.
+			return 0, false
 		}
-		// if the item after current item is a number, then the current item has to be operation.
-		// switch based on which operation it is and update the cal variable by performing this
-		// operation on cal variable and the item after the current item in this loop.
 		switch sanitized[i] {
 		case "plus":
 			cal += val
@@ -45,6 +40,8 @@ func Answer(question string) (int, bool) {
 			cal *= val
 		case "divided":
 			cal /= val
+		default: // if its not a supported operator then we have invalid question.
+			return 0, false
 		}
 	}
 	return cal, true
