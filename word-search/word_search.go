@@ -2,28 +2,30 @@ package wordsearch
 
 import "errors"
 
+// directions contains various directions in 2d matrix.
 var directions = [][]int{
-	// {row, column}
-	{-1, 0},  // north
-	{1, 0},   // south
-	{0, 1},   // east
-	{0, -1},  // west
-	{-1, 1},  // north east
-	{1, 1},   // south east
-	{1, -1},  // south west
-	{-1, -1}, // north west
+	{-1, 0},  // top
+	{1, 0},   // bottom
+	{0, 1},   // right
+	{0, -1},  // left
+	{-1, 1},  // top right
+	{1, 1},   // bottom right
+	{1, -1},  // bottom left
+	{-1, -1}, // top left
 }
 
 var (
 	errNotFound = errors.New("word not present in puzzle")
-	defArray    = [2]int{}
-	defMatrix   = [2][2]int{}
+	zeroArray   = [2]int{}
+	zeroMatrix  = [2][2]int{}
 )
 
+// Solve takes a word puzzle and a list of words to find in them, and returns each word's position
+// in the word puzzle.
 func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 	wordMap := make(map[string][2][2]int)
 	for _, word := range words {
-		pos, ok := wordSolve(word, puzzle)
+		pos, ok := solveWord(word, puzzle)
 		if !ok {
 			return nil, errNotFound
 		}
@@ -32,8 +34,9 @@ func Solve(words []string, puzzle []string) (map[string][2][2]int, error) {
 	return wordMap, nil
 }
 
-// function to search a single word
-func wordSolve(word string, puzzle []string) ([2][2]int, bool) {
+// solveWord takes a word and a word puzzle, it returns the position of the word in the
+// word puzzle.
+func solveWord(word string, puzzle []string) ([2][2]int, bool) {
 	rowLen, colLen := len(puzzle), len(puzzle[0])
 	for i := 0; i < rowLen; i++ {
 		for j := 0; j < colLen; j++ {
@@ -44,14 +47,16 @@ func wordSolve(word string, puzzle []string) ([2][2]int, bool) {
 			return [2][2]int{{j, i}, end}, true
 		}
 	}
-	return defMatrix, false
+	return zeroMatrix, false
 }
 
+// find takes a word puzzle, a word, and a position in word puzzle as input. it searches
+// for matches for that word in all directions from that position. if a match is found
+// then it returns the last position of the word in word puzzle.
 func find(word string, puzzle []string, row, col int) ([2]int, bool) {
 	if word[0] != puzzle[row][col] {
-		return defArray, false
+		return zeroArray, false
 	}
-	// we  found a possible starting point
 	rowLen, colLen, wordLen := len(puzzle), len(puzzle[row]), len(word)-1
 
 	// range though all possible directions we can can proceed
@@ -78,5 +83,5 @@ func find(word string, puzzle []string, row, col int) ([2]int, bool) {
 
 	}
 
-	return defArray, false
+	return zeroArray, false
 }

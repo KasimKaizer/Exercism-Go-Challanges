@@ -8,7 +8,6 @@ import (
 // WeekSchedule defines our descriptors type.
 type WeekSchedule int
 
-// assign constants for our descriptors with there respective value.
 const (
 	First  WeekSchedule = 1
 	Second WeekSchedule = 8

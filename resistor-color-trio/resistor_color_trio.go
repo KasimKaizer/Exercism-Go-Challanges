@@ -1,4 +1,4 @@
-// Package resistorcolortrio contains solution for Resistor Color Trio Exercise on Exercism.
+// Package resistorcolortrio contains various tools to calculate resistance of a resistance.
 package resistorcolortrio
 
 import (
@@ -6,10 +6,9 @@ import (
 	"math"
 )
 
-// resistor types denotes resistance of a resistor.
-type resistor int
+// resistance types denotes resistance of a resistor.
+type resistance int
 
-// metric ohms values.
 const (
 	kilo = 1e3 // couldn't figure out how to do this with iota.
 	mega = 1e6
@@ -17,8 +16,8 @@ const (
 	tera = 1e12
 )
 
-// resistance map links colors to the resistance they represent.
-var resistance = map[string]resistor{
+// resistanceMap links colors to the resistance value they represent.
+var resistanceMap = map[string]resistance{
 	"black":  0,
 	"brown":  1,
 	"red":    2,
@@ -31,8 +30,8 @@ var resistance = map[string]resistor{
 	"white":  9,
 }
 
-// string method represents the resistor type as a string.
-func (r resistor) string() string {
+// string method represents the resistance type as a string.
+func (r resistance) string() string {
 	switch {
 	case r >= tera:
 		return fmt.Sprintf("%d teraohms", r/tera)
@@ -52,20 +51,18 @@ func Label(colors []string) string {
 
 	if colLen == 0 {
 		// edge case, handle empty colors slice by returning 0.
-		return resistor(0).string()
+		return resistance(0).string()
 	}
 
 	if colLen < 2 {
 		// edge case, handle colors slice with only one color by retuning the resistance mapping
 		// to that color.
-		return resistance[colors[0]].string()
+		return resistanceMap[colors[0]].string()
 	}
 
-	res := resistor(0)
-	for idx, color := range colors[:2] { // loop through first two colors.
-		// add the resistance of current color multiplied by 10 ^ the color's position
-		// to the final res value.
-		res += resistance[color] * intPow(10, 1-idx)
+	res := resistance(0)
+	for idx, color := range colors[:2] {
+		res += resistanceMap[color] * intPow(10, 1-idx)
 	}
 
 	if colLen < 3 {
@@ -74,13 +71,12 @@ func Label(colors []string) string {
 		return res.string()
 	}
 
-	// add the amount of zeros represented by the third color of the colors array to res value.
-	res *= intPow(10, int(resistance[colors[2]]))
+	res *= intPow(10, int(resistanceMap[colors[2]]))
 	return res.string()
 }
 
 // intPow function calls math.Pow func on passed values, but it takes int values and returns
-// type resistor value.
-func intPow(num, exp int) resistor {
-	return resistor(math.Pow(float64(num), float64(exp)))
+// type resistance value.
+func intPow(num, exp int) resistance {
+	return resistance(math.Pow(float64(num), float64(exp)))
 }

@@ -6,17 +6,17 @@ import (
 	"strings"
 )
 
-// Set is our custom set, it holds string values.
+// Set is a custom set, it holds string values.
 type Set map[string]bool
 
 // New creates a new Set.
 func New() Set {
-	return Set{}
+	return make(Set)
 }
 
 // NewFromSlice takes a slice of string and returns a set with items of that slice.
 func NewFromSlice(l []string) Set {
-	newSet := make(Set)
+	newSet := New()
 	for _, char := range l {
 		newSet[char] = true
 	}
@@ -27,11 +27,11 @@ func NewFromSlice(l []string) Set {
 func (s Set) String() string {
 	var output strings.Builder
 	idx, setLen := 0, len(s)-1
-	output.WriteString("{") // our string starts and ends with brackets {}
+	output.WriteString("{")
 	for val := range s {
-		output.WriteString(fmt.Sprintf("\"%s\"", val)) // add the item to the string
+		output.WriteString(fmt.Sprintf("\"%s\"", val))
 		if idx == setLen {
-			break // we don't want to add a coma and a space after the last item.
+			break
 		}
 		output.WriteString(", ")
 		idx++
@@ -40,13 +40,12 @@ func (s Set) String() string {
 	return output.String()
 }
 
-// IsEmpty method returns true if the set is empty, and false if it isn't.
+// IsEmpty method returns true if the set is empty.
 func (s Set) IsEmpty() bool {
 	return len(s) == 0
 }
 
-// Has method takes a string and returns true if that string is present inside the set,
-// if not then it returns false.
+// Has method takes a string and returns true if that string is present inside the set.
 func (s Set) Has(elem string) bool {
 	_, ok := s[elem]
 	return ok
@@ -68,9 +67,6 @@ func Subset(s1, s2 Set) bool {
 	}
 	return true
 }
-
-// TODO: see if you can reduce the amount of code here, i bet there would be some
-// thing we can do here to implement DRY
 
 // Disjoint takes two sets and returns true if non of the elements of both sets are
 // present in each other.
@@ -94,40 +90,40 @@ func Equal(s1, s2 Set) bool {
 
 // Intersection takes two sets and returns a set of all shared elements
 func Intersection(s1, s2 Set) Set {
-	newSet := make(Set)
+	newSet := New()
 	big, small := s1, s2
-	if len(small) > len(big) { // find the bigger and smaller set.
+	if len(small) > len(big) {
 		big, small = small, big
 	}
-	for item := range big { // range over bigger set and search for items in smaller set.
-		if _, ok := small[item]; !ok {
-			continue // continue if an item is not found in smaller set.
-		}
-		newSet[item] = true // add the item found in both set to newSet.
-	}
-	return newSet
-}
-
-// Difference takes two sets and returns a set of all elements that are only in the first set.
-func Difference(s1, s2 Set) Set {
-	newSet := make(Set)
-	for item := range s1 {
-		if _, ok := s2[item]; ok {
-			continue // if the item is found in second set, then continue to next item.
+	for item := range small {
+		if _, ok := big[item]; !ok {
+			continue
 		}
 		newSet[item] = true
 	}
 	return newSet
 }
 
-// Union takes two sets and returns a set of all elements in either set.
+// Difference takes two sets and returns a set of all elements that are only in the first set.
+func Difference(s1, s2 Set) Set {
+	newSet := New()
+	for item := range s1 {
+		if _, ok := s2[item]; ok {
+			continue
+		}
+		newSet[item] = true
+	}
+	return newSet
+}
+
+// Union takes two sets and returns a set of all elements in them.
 func Union(s1, s2 Set) Set {
-	newSet := make(Set)
+	newSet := New()
 	for item, val := range s1 {
-		newSet[item] = val // add all items in s1 to newSet.
+		newSet[item] = val
 	}
 	for item, val := range s2 {
-		newSet[item] = val // add all items in s2 to newSet.
+		newSet[item] = val
 	}
 	return newSet
 }

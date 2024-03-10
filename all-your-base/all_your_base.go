@@ -1,4 +1,4 @@
-// Package allyourbase contains solution for All Your Base  Exercise on Exercism.
+// Package allyourbase contains tools to convert numbers from one base to another.
 package allyourbase
 
 import (
@@ -18,29 +18,27 @@ var (
 func ConvertToBase(inputBase int, inputDigits []int, outputBase int) ([]int, error) {
 
 	if inputBase < 2 {
-		return nil, errInvInBase // input base can't be lower than 2
+		return nil, errInvInBase
 	}
 
 	if outputBase < 2 {
-		return nil, errInvOutBase // output base can't be lower than 2
+		return nil, errInvOutBase
 	}
 
-	inputB10, err := convToB10(inputBase, inputDigits) // convert the input value into base 10
+	inputB10, err := convToB10(inputBase, inputDigits)
 	if err != nil {
 		return nil, err
 	}
 
-	return convFromB10(outputBase, inputB10), nil // convert the base 10 value to output base.
+	return convFromB10(outputBase, inputB10), nil
 }
 
 // convToB10 takes a value and its base and returns that value represented in base10.
 func convToB10(base int, val []int) (int, error) {
 	base10Val := 0
 	valLen := len(val) - 1
-	for idx, num := range val { // loop through all the values in val.
+	for idx, num := range val {
 		if num >= base || num < 0 {
-			// if the current number is greater than or equal to its base then
-			// input value if invalid.
 			return 0, errInvInput
 		}
 		// multiply current number with its base ^ its place. and add it to base10val.
@@ -55,14 +53,11 @@ func convToB10(base int, val []int) (int, error) {
 // the value to that base.
 func convFromB10(base, b10Val int) []int {
 	if b10Val == 0 {
-		return []int{0} // if the value is 0 then return 0 inside a slice.
+		return []int{0}
 	}
 	convVal := make([]int, 0)
-	for b10Val > 0 { // loop for as long as base10 value is greater then 0.
-		// append the reminder of the base10 value divided by the base we want to convert it into
-		// to the front of the convVal slice.
+	for b10Val > 0 {
 		convVal = append([]int{(b10Val % base)}, convVal...)
-		// update the base10 value by dividing it with the base we want to convert it into.
 		b10Val /= base
 	}
 	return convVal

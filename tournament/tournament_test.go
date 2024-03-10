@@ -61,7 +61,7 @@ Courageous Californians        |  3 |  0 |  1 |  2 |  1
 `[1:],
 	},
 	{
-		// A complete competition has all teams play eachother once or twice.
+		// A complete competition has all teams play each other once or twice.
 		description: "incomplete competition",
 		input: `
 Allegoric Alaskians;Blithering Badgers;win

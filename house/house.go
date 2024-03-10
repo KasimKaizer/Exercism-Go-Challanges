@@ -11,6 +11,9 @@ const (
 	lastVerse  = 12
 )
 
+// TODO: maybe group the nouns and there adjectives together.
+
+// nouns in the song.
 var noun = []string{
 	"house that Jack built",
 	"malt",
@@ -26,6 +29,7 @@ var noun = []string{
 	"horse and the hound and the horn",
 }
 
+// adjectives to be followed by the nouns in the song.
 var adjective = []string{
 	"lay in",
 	"ate",
@@ -40,7 +44,13 @@ var adjective = []string{
 	"belonged to",
 }
 
+// Verse takes a number and returns the verse of 'This is the House that Jack Built' corresponding
+// to that number.
 func Verse(v int) string {
+	if v > lastVerse || v < firstVerse {
+		return ""
+	}
+
 	if v == firstVerse {
 		return "This is the house that Jack built."
 	}
@@ -62,6 +72,7 @@ func Verse(v int) string {
 	return output.String()
 }
 
+// Song returns 'This is the House that Jack Built' rhyme.
 func Song() string {
 	var output strings.Builder
 	for i := firstVerse; i <= lastVerse; i++ {
