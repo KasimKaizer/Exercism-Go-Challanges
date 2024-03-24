@@ -1,12 +1,14 @@
+// Package secret contains tools derive secret messages.
 package secret
 
-var secretCode = []string{
+var secretCode = [...]string{
 	"wink",
 	"double blink",
 	"close your eyes",
 	"jump",
 }
 
+// Handshake convert the provided code into a secret message.
 func Handshake(code uint) []string {
 	message := make([]string, 0)
 	for idx, text := range secretCode {
@@ -21,6 +23,7 @@ func Handshake(code uint) []string {
 	return message
 }
 
+// reverse reverses the provided slice.
 func reverse(message []string) {
 	msgLen := len(message)
 	for i, j := 0, msgLen-1; i < msgLen/2; i, j = i+1, j-1 {

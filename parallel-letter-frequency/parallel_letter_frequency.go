@@ -1,4 +1,4 @@
-// Package letter contains solution for the Parallel letter Frequency exercise on Exercism.
+// Package letter contains tools to calculate letter frequency in a given text.
 package letter
 
 import "sync"
@@ -25,19 +25,14 @@ func ConcurrentFrequency(texts []string) FreqMap {
 	results := make(chan FreqMap)
 	for _, text := range texts {
 		wg.Add(1)
-		go count(text, results, &wg) // create a go routine to count all runes in a text, and add 1 to wg.
+		go count(text, results, &wg)
 	}
 
 	go func() {
-		wg.Wait()      // wait for all goroutines to have completed.
-		close(results) // close results channel, so we can range over results channel without any issue.
+		wg.Wait()
+		close(results)
 	}()
 
-	// what we are doing here is that we have a FreqMap for each text in texts array, now we combine the data
-	// from all those FreqMap into a single map.
-	// maybe we could run this inside a go routines as well, like divide the counting to different go routines
-	// which each working on part of the result channel, and then we just range over the resulting maps and combine
-	// them. but that would be unnecessary for this exercise.
 	output := make(FreqMap)
 	for item := range results {
 		for key, count := range item {
@@ -50,18 +45,17 @@ func ConcurrentFrequency(texts []string) FreqMap {
 // count takes a string and counts frequency of all characters in that passed string and sends the output,
 // which is in form of a FreqMap through the res channel.
 func count(text string, res chan<- FreqMap, wg *sync.WaitGroup) {
-	// signal done to the passed Wait Group once the execution of this func has completed.
 	defer wg.Done()
 	tempMap := make(FreqMap)
 
 	for _, char := range text {
-		tempMap[char]++ // count frequency of each rune in the text
+		tempMap[char]++
 	}
-	res <- tempMap // send the map through res.
+	res <- tempMap
 }
 
 // Another solution to this problem, this solution uses worker pools, I though this was just
-// interesting and wanted to play around a bit.
+// interesting and wanted to play around with it a bit.
 /*
 func ConcurrentFrequency(texts []string) FreqMap {
 	textLen := len(texts)

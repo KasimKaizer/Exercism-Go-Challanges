@@ -7,7 +7,6 @@ import (
 )
 
 var (
-	// error for badly improper sequenced records.
 	errNonSeq = errors.New("records are not sequential")
 )
 
@@ -27,20 +26,15 @@ type Node struct {
 func Build(records []Record) (*Node, error) {
 	recLen := len(records)
 	if recLen == 0 {
-		return nil, nil // return nil if record list is empty.
+		return nil, nil
 	}
-	recordsCopy := make([]Record, recLen)
 	newRecords := make([]*Node, recLen)
-	// make a copy of the record slice, so we don't mutate the original record slice when we sort records.
-	copy(recordsCopy, records)
 
-	// sort the copy of records.
-	sort.Slice(recordsCopy, func(i, j int) bool {
-		return recordsCopy[i].ID < recordsCopy[j].ID
+	sort.Slice(records, func(i, j int) bool {
+		return records[i].ID < records[j].ID
 	})
 
-	// range over all the sorted records.
-	for idx, record := range recordsCopy {
+	for idx, record := range records {
 		// if index of the record is not equal to its id then we know the records are not
 		// properly sequential.
 		if idx != record.ID ||
@@ -63,5 +57,5 @@ func Build(records []Record) (*Node, error) {
 		newRecords[record.Parent].Children = append(newRecords[record.Parent].Children, newRecords[record.ID])
 	}
 
-	return newRecords[0], nil // return the first node from the newRecords slice.
+	return newRecords[0], nil
 }

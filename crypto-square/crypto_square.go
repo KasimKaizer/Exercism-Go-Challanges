@@ -3,43 +3,37 @@ package cryptosquare
 
 import (
 	"math"
-	"regexp"
 	"strings"
+	"unicode"
 )
-
-// re matches all non alphanumeric characters.
-var re = regexp.MustCompile(`[^a-z0-9]+`)
 
 // Encode takes a string and encodes it to square code.
 func Encode(pt string) string {
 
-	var normalized strings.Builder
-	normalized.WriteString(re.ReplaceAllString(strings.ToLower(pt), ""))
-	if normalized.String() == "" {
+	normal := normalize(pt)
+	if normal.Len() == 0 {
 		return ""
 	}
-	normLen := normalized.Len()
-	columns, rows := sideCal(normLen)
+	columns, rows := calRectangleDimensions(normal.Len())
 
 	// add whiteSpaces to our string till the length of it is equal to the area of the
 	// sqr/rectangle we got from sideCal.
-	for i := 0; i < ((columns * rows) - normLen); i++ {
-		normalized.WriteByte(' ')
-	}
+	normal.WriteString(strings.Repeat(" ", (columns*rows)-normal.Len()))
 
-	sqrMatrix := splitByIndex(normalized.String(), columns)
+	sqrMatrix := splitByChunkLength(normal.String(), columns)
 
 	var output strings.Builder
 	for col := range sqrMatrix[0] {
 		for row := range sqrMatrix {
 			output.WriteByte(sqrMatrix[row][col])
 		}
+		output.WriteByte(' ')
 	}
-	return addSpace(output.String(), rows)
+	return strings.TrimSuffix(output.String(), " ")
 }
 
 // sideCal takes an int and returns the sides of the closed square to it.
-func sideCal(x int) (int, int) {
+func calRectangleDimensions(x int) (int, int) {
 	cal := math.Sqrt(float64(x))
 	columns, rows := int(cal), int(cal)
 
@@ -55,25 +49,27 @@ func sideCal(x int) (int, int) {
 
 // splitByIndex takes a string and an interval and returns a [][]byte representing
 // the string split at every occurrence of that interval and then converted into bytes.
-func splitByIndex(str string, idx int) [][]byte {
-	output := make([][]byte, 0)
+func splitByChunkLength(str string, idx int) [][]byte {
+	output := make([][]byte, len(str)/idx)
+	j := 0
 	for i := 0; i < len(str); i = i + idx {
-		output = append(output, []byte(str[i:i+idx]))
+		output[j] = []byte(str[i : i+idx])
+		j++
 	}
 	return output
 }
 
-// addSpace takes a string and a interval and returns a string where a whiteSpace is added
-// at every occurrence of the provided interval.
-func addSpace(str string, idx int) string {
+// normalize normalizes the input string by removing any character thats not a alphanumeric.
+func normalize(input string) *strings.Builder {
 	var output strings.Builder
-	pos := idx - 1
-	lastPos := len(str) - 1
-	for i, char := range []byte(str) {
-		output.WriteByte(char)
-		if i%idx == pos && i != lastPos {
-			output.WriteByte(' ')
+	for _, char := range input {
+		if unicode.IsNumber(char) || unicode.IsLetter(char) {
+			if unicode.IsUpper(char) {
+				char = unicode.ToLower(char)
+			}
+			output.WriteRune(char)
 		}
+
 	}
-	return output.String()
+	return &output
 }
