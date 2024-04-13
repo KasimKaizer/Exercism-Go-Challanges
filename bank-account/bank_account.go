@@ -1,13 +1,13 @@
-// Package account contains solution for the Bank Account exercise on Exercism.
+// Package account contains tools to implement monetary facilities with users
 package account
 
 import "sync"
 
 // Account type defines an account in the bank.
 type Account struct {
+	mu     sync.Mutex
 	Closed bool
 	Amount int64
-	MX     sync.Mutex
 }
 
 // Open takes an amount and returns an account where input amount is its balance.
@@ -20,8 +20,8 @@ func Open(amount int64) *Account {
 
 // Balance method returns the current balance of the account.
 func (a *Account) Balance() (int64, bool) {
-	a.MX.Lock()
-	defer a.MX.Unlock() // lock any changes to account until this function is done executing.
+	a.mu.Lock()
+	defer a.mu.Unlock() // lock any changes to account until this function is done executing.
 	if a.Closed {
 		return a.Amount, false
 	}
@@ -30,8 +30,8 @@ func (a *Account) Balance() (int64, bool) {
 
 // Deposit method allows amount to be deposited to or withdrawn from the account.
 func (a *Account) Deposit(amount int64) (int64, bool) {
-	a.MX.Lock()
-	defer a.MX.Unlock()
+	a.mu.Lock()
+	defer a.mu.Unlock()
 	if a.Closed || (a.Amount+amount) < 0 {
 		// if the account is closed or if the input amount would lead to a negative balance then
 		// return false.
@@ -44,8 +44,8 @@ func (a *Account) Deposit(amount int64) (int64, bool) {
 
 // Close method closes the current account
 func (a *Account) Close() (int64, bool) {
-	a.MX.Lock()
-	defer a.MX.Unlock()
+	a.mu.Lock()
+	defer a.mu.Unlock()
 	if a.Closed {
 		return a.Amount, false
 	}

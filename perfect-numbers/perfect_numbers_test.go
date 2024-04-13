@@ -1,10 +1,13 @@
 package perfect
 
-import "testing"
+import (
+	"errors"
+	"testing"
+)
 
 func TestZeroGivesPositiveRequiredError(t *testing.T) {
 	t.Run("GivesPositiveRequiredError", func(t *testing.T) {
-		if _, err := Classify(0); err != ErrOnlyPositive {
+		if _, err := Classify(0); !errors.Is(err, ErrOnlyPositive) {
 			t.Fatalf("Classify(0) expected error %q, got: %q", ErrOnlyPositive, err)
 		}
 	})

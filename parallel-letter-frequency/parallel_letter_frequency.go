@@ -1,8 +1,6 @@
 // Package letter contains tools to calculate letter frequency in a given text.
 package letter
 
-import "sync"
-
 // FreqMap records the frequency of each rune in a given text.
 type FreqMap map[rune]int
 
@@ -19,23 +17,15 @@ func Frequency(text string) FreqMap {
 // ConcurrentFrequency counts the frequency of each rune in a given text concurrently and returns
 // the data in form of FreqMap
 func ConcurrentFrequency(texts []string) FreqMap {
-	// self imposed constraint, don't use len() func.
-
-	var wg sync.WaitGroup
 	results := make(chan FreqMap)
 	for _, text := range texts {
-		wg.Add(1)
-		go count(text, results, &wg)
+		go count(text, results)
 	}
 
-	go func() {
-		wg.Wait()
-		close(results)
-	}()
-
 	output := make(FreqMap)
-	for item := range results {
-		for key, count := range item {
+	for i := 0; i < len(texts); i++ {
+		result := <-results
+		for key, count := range result {
 			output[key] += count // combine all maps from result channel.
 		}
 	}
@@ -44,8 +34,7 @@ func ConcurrentFrequency(texts []string) FreqMap {
 
 // count takes a string and counts frequency of all characters in that passed string and sends the output,
 // which is in form of a FreqMap through the res channel.
-func count(text string, res chan<- FreqMap, wg *sync.WaitGroup) {
-	defer wg.Done()
+func count(text string, res chan<- FreqMap) {
 	tempMap := make(FreqMap)
 
 	for _, char := range text {

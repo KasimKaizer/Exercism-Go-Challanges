@@ -5,31 +5,56 @@ import (
 	"errors"
 	"math/rand"
 	"strings"
+	"sync"
 )
 
 // limit defines the number of names possible.
 const limit = 26 * 26 * 10 * 10 * 10
 
 // memory stores all then names current in use by robots.
-var memory = make(map[string]bool)
+type memory struct {
+	data map[string]struct{}
+	mx   sync.Mutex
+}
+
+func (m *memory) exists(name string) bool {
+	m.mx.Lock()
+	defer m.mx.Unlock()
+	_, ok := m.data[name]
+	return ok
+}
+
+func (m *memory) set(name string) {
+	m.mx.Lock()
+	defer m.mx.Unlock()
+	m.data[name] = struct{}{}
+}
+
+func (m *memory) len() int {
+	m.mx.Lock()
+	defer m.mx.Unlock()
+	return len(m.data)
+}
 
 // Robot defines a robot, it has only one field which is its name.
 type Robot struct {
 	name string
 }
 
+var data = &memory{data: make(map[string]struct{})}
+
 // Name method returns the name of the robot, if it doesn't have a name then it would
 // generate a random unique name.
 func (r *Robot) Name() (string, error) {
 
 	if r.name != "" {
-		return r.name, nil // check if the robot already has a name, if yes then return it.
+		return r.name, nil
 	}
 
-	if limit == len(memory) { // return error if there aren't any names which could be generated.
+	if limit == data.len() {
 		return "", errors.New("maximum limit of unique names that could be created reached")
 	}
-	r.name = r.nameGen() // get an unique name, and set it as the robot's name
+	r.name = r.nameGen()
 
 	return r.name, nil
 }
@@ -39,9 +64,9 @@ func (r *Robot) Name() (string, error) {
 func (r *Robot) Reset() error {
 	// cause of the restrictions of this exercise, this would cause tests to fail. even tho its
 	// sensible.
-	// delete(memory, r.name) // free the current name for other robot's to use.
-	r.name = ""        // remove the current robot's name.
-	_, err := r.Name() // give a new unique name to the bot.
+	// delete(memory, r.name)
+	r.name = ""
+	_, err := r.Name()
 	if err != nil {
 		return err
 	}
@@ -50,18 +75,17 @@ func (r *Robot) Reset() error {
 
 // nameGen generates a random unique name in a specific format and returns it.
 func (r *Robot) nameGen() string {
-
 	var output strings.Builder
-	for i := 0; i < 2; i++ { // add two random capital letters to the string.
-		output.WriteRune('A' + rune(rand.Intn(26)))
+	for i := 0; i < 2; i++ {
+		output.WriteByte(byte('A') + byte(rand.Intn(26)))
 	}
-	for i := 0; i < 3; i++ { // add three random numbers to the string.
-		output.WriteRune('0' + rune(rand.Intn(10)))
+	for i := 0; i < 3; i++ {
+		output.WriteByte(byte('0') + byte(rand.Intn(10)))
 	}
 	name := output.String()
-	if memory[name] {
-		return r.nameGen() // keep on generating until we get a unique name.
+	if data.exists(name) {
+		return r.nameGen()
 	}
-	memory[name] = true // add the name to the memory.
+	data.set(name)
 	return name
 }

@@ -9,7 +9,7 @@ import (
 
 // Changes to implement
 // - split up the code into more manageable function
-// - remove instances of string concatenation, with a string builder of Sprintf
+// - remove instances of string concatenation, with a string builder or Sprintf
 // - improve the nesting, the code seems way too nested
 // - we work on a single html string
 // - a bug, the markdown won't work for text with multiple bold or em
@@ -19,6 +19,9 @@ import (
 // Render translates markdown to HTML
 func Render(markdown string) string {
 	header := 0
+	// spin it out into a function, don't use built-in strings.Replace, they don't work well enough
+	// my approach:
+	// create a string builder and alternate between
 	markdown = strings.Replace(markdown, "__", "<strong>", 1)
 	markdown = strings.Replace(markdown, "__", "</strong>", 1)
 	markdown = strings.Replace(markdown, "_", "<em>", 1)

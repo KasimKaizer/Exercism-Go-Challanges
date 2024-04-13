@@ -1,11 +1,11 @@
-// Package linkedlist contains solution for the Linked List exercise on Exercism.
+// Package linkedlist contains implementation of doubly linked list.
 package linkedlist
 
 import "errors"
 
 // Node type defines a node in a doubly linked list.
 type Node struct {
-	Value    interface{}
+	Value    any
 	PrevNode *Node
 	NextNode *Node
 }
@@ -21,12 +21,12 @@ type List struct {
 var errListEmpty = errors.New("unable to remove item, list is empty")
 
 // newNode creates a new node with passed value.
-func newNode(v interface{}) *Node {
+func newNode(v any) *Node {
 	return &Node{Value: v}
 }
 
 // takes any number of elements and returns them in form of a list.
-func NewList(elements ...interface{}) *List {
+func NewList(elements ...any) *List {
 	newList := new(List)
 	for _, item := range elements {
 		newList.Push(item)
@@ -45,8 +45,8 @@ func (n *Node) Prev() *Node {
 }
 
 // Unshift method inserts a value at the front of the list.
-func (l *List) Unshift(v interface{}) {
-	newNode := newNode(v) // create a new node with the value.
+func (l *List) Unshift(v any) {
+	newNode := newNode(v)
 	l.Length++
 	if l.Head == nil { // if the list is empty then new node will be both head and tail.
 		l.Tail, l.Head = newNode, newNode
@@ -58,7 +58,7 @@ func (l *List) Unshift(v interface{}) {
 }
 
 // Push method inserts a value at the back of the list
-func (l *List) Push(v interface{}) {
+func (l *List) Push(v any) {
 	newNode := newNode(v)
 	l.Length++
 	if l.Tail == nil {
@@ -70,13 +70,13 @@ func (l *List) Push(v interface{}) {
 }
 
 // Shift method removes a value from the front of the list.
-func (l *List) Shift() (interface{}, error) {
+func (l *List) Shift() (any, error) {
 	if l.Length == 0 {
 		return nil, errListEmpty // can't remove a value from an empty list.
 	}
 	l.Length--
-	toReturn := l.Head.Value // get the value to return.
-	l.Head = l.Head.NextNode // assign the node after the current node as head.
+	toReturn := l.Head.Value
+	l.Head = l.Head.NextNode // assign the node after the current head as head.
 	if l.Head == nil {       // if the new head is nil then list is now empty.
 		l.Tail = nil // set tail as nil as well and return.
 		return toReturn, nil
@@ -86,7 +86,7 @@ func (l *List) Shift() (interface{}, error) {
 }
 
 // Pop method removes a value from the back of the list.
-func (l *List) Pop() (interface{}, error) {
+func (l *List) Pop() (any, error) {
 	if l.Length == 0 {
 		return nil, errListEmpty
 	}
